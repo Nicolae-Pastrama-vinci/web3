@@ -1,0 +1,21 @@
+.boite {
+    padding: 15rem;
+    max-width: 500px;
+    background-color: white;
+}
+
+.red {
+    background-color: red;
+}
+
+.magenta {
+    background-color: magenta;
+}
+
+.green {
+    background-color: green;
+}
+
+.yellow {
+    background-color: yellow;
+}
