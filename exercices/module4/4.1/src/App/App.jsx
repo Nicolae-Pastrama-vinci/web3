@@ -1,14 +1,19 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import personService from '../services/person'
+
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456', id: 1 },
-    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
-    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
-    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
-  ]) 
+
+  const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
+
+
+  useEffect(() => {
+    personService.getAll().then(initialPersons => {
+      setPersons(initialPersons)
+    })
+  }, [])
 
   const handleNewName = (e) => {
     setNewName(e.target.value);
@@ -24,12 +29,16 @@ const App = () => {
       id : persons.length + 1,
       number : newNumber
     }
-    persons.some(person => person.name === newName) 
+    persons.some(persons => persons.name === newName) 
     ? alert(`${newName} is already added in the phonebook`)
-      : setPersons(persons.concat(addName));
-  
-    setNewName("");
-    setNewNumber("");
+      : 
+        personService
+        .create(addName)
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson))
+          setNewName("")
+          setNewNumber("")
+        })
   }
 
   return (
@@ -45,7 +54,7 @@ const App = () => {
         </div>
       </form>
       <h2>Numbers</h2>
-        {persons.map(person => <p key={person.id}>{person.name} {person.number}</p>)}
+        {persons.map(persons => <p key={persons.id}>{persons.name} {persons.number}</p>)}
     </div>
   )
 }
